@@ -107,9 +107,54 @@ Now change the following values, and pay attention to the quotes:
 , "bitraider_disable": true
 ```
 
-## Running SWTOR
+## Running SWTOR <a id="running"></a>
 Starting SWTOR from your Bottle is a bit more complicated than it may seem.
+Wine will probably create a program entry during the installation, but if 
+you use this, your performance might be lower than if you use the method
+described here.
 
+### Script <a id="script"></a>
+By using a special script, is is possible to start SWTOR with options that
+lower the performance impact of using Wine to run SWTOR. Put the script
+below in a folder that you find convenient. I have put it in `~/Bottles`,
+so I have a central place to start Wine programs from.
+Open your favourite text editor (`nano SWTOR.sh`) and save the script as `SWTOR.sh`.
+```bash
+export VIDEO_MEMORY_SIZE=4096  # Make sure to change this to the amount of MiB of video memory your GPU has
+export WINEARCH=win32
+export WINEPREFIX="/home/user/Bottles/SWTOR"  # Again, change the path if you use a different location
+export WINEDEBUG="-all"  # Disables all Wine Debugging features
+# Remember to change this path
+wine $WINEPREFIX'/drive_c/Program Files/Electronic Arts/BioWare/Star Wars - The Old Republic/launcher.exe'
+```
+Then make the script executable by using:
+```bash
+chmod +x SWTOR.sh
+```
+Now you can use `./SWTOR.sh` to open SWTOR. Or, if you would rather
+not change directory each time before starting use:
+```bash
+bash ~/Bottles/SWTOR.sh
+```
+### Desktop Entry <a id="desktop"></a>
+Now that you have a special script to start SWTOR, it would be nice
+if you could start it from the normal Ubuntu menu by typing `SWTOR`,
+right? Adding this functionality is really easy. Note that this section
+is meant to be used on distributions with the *GNOME desktop environment*
+(Ubuntu 17.10 and later).
+
+Create a new file in your favourite text editor: `/usr/share/applications/SWTOR.desktop`,
+and add the following contents:
+```config
+[Desktop Entry]
+Name=Star Wars - The Old Republic
+Exec=/home/user/Bottles/SWTOR.sh  # Like before, change the path
+Type=Application
+Categories=GTK;GNOME;
+```
+After closing and saving, when you search for `Star Wars - The Old Republic`,
+an entry without an icon should come up. This is the entry that will run
+the special start-up script.
 
 ## Tips <a id="tips"></a>
 - Remove BitRaider as described. *Seriously*, spare yourself loads of
@@ -124,23 +169,30 @@ Starting SWTOR from your Bottle is a bit more complicated than it may seem.
   This will create a new audio output device named `Virtual_Cable` that 
   can be selected in the Audio tab of `winecfg`. Then you can select
   the automatically created monitor of this device as audio source in
-  the recording software of your choosing. To make the setup permament
-  use:
+  the recording software of your choosing. 
+  If you do not hear anything anymore after running this command,
+  simply go into the Ubuntu sound settings and select your speakers
+  as default output again.
+  To make the setup permament use:
   ```bash
   echo "load-module module-null-sink sink_name=Virtual_Cable sink_properties=device.description=Virtual_Cable" >> /etc/pulse/default.pa
   ```
+  If you would also like to hear the sound of the game through the speakers
+  (which I can imagine you do), then you also need to add a loopback of the
+  monitor to your default audio device (speakers): 
+  ```bash
+  pacmd load-module module-loopback source="Virtual_Cable.monitor"
+  ```
+  Again, to make it permanent:
+  ```bash
+  echo "load-module module-loopback source='Virtual_Cable.monitor'" >> /etc/pulse/default.pa
+  ```
 
 ## Definitions <a id="definitions"></a>
-In this section, terms you might not recognize are explained. If you do not
-understand any terms that are not named here, then I recommend you get to
-know the Linux terminal a little better first.
 1. A Wine Bottle is a folder that contains a separate Wine-configuration
   for (usually) a single program.
-  
+
 ## Credits <a id="credits"></a>
-Special thanks to Verain, a prominent member of the Galactic StarFighter 
-community, for helping me setup my Wine Bottle for SWTOR and giving me
-tips on how to improve performance.
 - [Virtual Audio Cable](https://onetransistor.blogspot.nl/2017/10/virtual-audio-cable-in-linux-ubuntu.html)
 - [Removing BitRaider](https://www.reddit.com/r/swtor/comments/3ksypm/guide_to_permanently_removing_bitraider_and/)
 
