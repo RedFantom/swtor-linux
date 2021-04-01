@@ -15,6 +15,7 @@ if you know the proper commands.
 - [Running SWTOR](#running)
   - [Script](#script)
   - [Desktop Entry](#desktop)
+  - [Error: Failed to download patch data](#error)
 - [Tips](#tips)
 - [Definitions](#definitions)
 - [Credits](#credits)
@@ -156,7 +157,7 @@ After closing and saving, when you search for `Star Wars - The Old Republic`,
 an entry without an icon should come up. This is the entry that will run
 the special start-up script.
 
-## Error: Failed to download patch data
+## Error: Failed to download patch data <a id="error"></a>
 Depending on the distribution you use, you might get an error when starting
 SWTOR that says that downloading the patch data has failed. This can happen
 if your Linux distribution does not include the required SSL root
